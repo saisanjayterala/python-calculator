@@ -1,6 +1,7 @@
 import math
 import cmath
-import random
+import statistics
+import sys
 
 def add(x, y):
     return x + y
@@ -27,22 +28,15 @@ def nth_root(x, n):
 def complex_sqrt(x):
     return cmath.sqrt(x)
 
-def exponential(x):
-    return math.exp(x)
+def logarithm(x, base):
+    if x <= 0 or base <= 0 or base == 1:
+        return "Error: Invalid input for logarithm"
+    return math.log(x, base)
 
-def natural_log(x):
-    if x <= 0:
-        return "Error: Invalid input for natural logarithm"
-    return math.log(x)
-
-def absolute_value(x):
-    return abs(x)
-
-def floor(x):
-    return math.floor(x)
-
-def ceiling(x):
-    return math.ceil(x)
+def factorial(x):
+    if x < 0:
+        return "Error: Factorial not defined for negative numbers"
+    return math.factorial(int(x))
 
 def sine(x):
     return math.sin(math.radians(x))
@@ -53,97 +47,88 @@ def cosine(x):
 def tangent(x):
     return math.tan(math.radians(x))
 
-def arcsin(x):
-    if x < -1 or x > 1:
-        return "Error: Input must be between -1 and 1"
-    return math.degrees(math.asin(x))
+def mean(*args):
+    return statistics.mean(args)
 
-def arccos(x):
-    if x < -1 or x > 1:
-        return "Error: Input must be between -1 and 1"
-    return math.degrees(math.acos(x))
+def median(*args):
+    return statistics.median(args)
 
-def arctan(x):
-    return math.degrees(math.atan(x))
+def mode(*args):
+    try:
+        return statistics.mode(args)
+    except statistics.StatisticsError:
+        return "No unique mode found"
 
-def random_number(start, end):
-    return random.randint(start, end)
+def standard_deviation(*args):
+    return statistics.stdev(args)
+
+def to_binary(x):
+    return bin(int(x))[2:]
+
+def from_binary(x):
+    return int(x, 2)
+
+def calculate_bmi(weight, height):
+    bmi = weight / (height ** 2)
+    return f"BMI: {bmi:.2f}"
+
+def exit_calculator():
+    print("Exiting the calculator. Goodbye!")
+    sys.exit(0)
+
+operations = {
+    '1': ('Add', add, 2),
+    '2': ('Subtract', subtract, 2),
+    '3': ('Multiply', multiply, 2),
+    '4': ('Divide', divide, 2),
+    '5': ('Power', power, 2),
+    '6': ('Nth Root', nth_root, 2),
+    '7': ('Complex Square Root', complex_sqrt, 1),
+    '8': ('Logarithm', logarithm, 2),
+    '9': ('Factorial', factorial, 1),
+    '10': ('Sine', sine, 1),
+    '11': ('Cosine', cosine, 1),
+    '12': ('Tangent', tangent, 1),
+    '13': ('Mean', mean, -1),
+    '14': ('Median', median, -1),
+    '15': ('Mode', mode, -1),
+    '16': ('Standard Deviation', standard_deviation, -1),
+    '17': ('To Binary', to_binary, 1),
+    '18': ('From Binary', from_binary, 1),
+    '19': ('Calculate BMI', calculate_bmi, 2),
+    '20': ('Exit', exit_calculator, 0)
+}
 
 while True:
     print("\nSelect operation:")
-    print("1. Add")
-    print("2. Subtract")
-    print("3. Multiply")
-    print("4. Divide")
-    print("5. Power")
-    print("6. Nth Root")
-    print("7. Complex Square Root")
-    print("8. Exponential")
-    print("9. Natural Logarithm")
-    print("10. Absolute Value")
-    print("11. Floor")
-    print("12. Ceiling")
-    print("13. Sine")
-    print("14. Cosine")
-    print("15. Tangent")
-    print("16. Arcsine")
-    print("17. Arccosine")
-    print("18. Arctangent")
-    print("19. Random Number")
-    print("20. Exit")
+    for key, (name, _, _) in operations.items():
+        print(f"{key}. {name}")
 
     choice = input("Enter choice (1-20): ")
 
-    if choice == '20':
-        print("Exiting the calculator. Goodbye!")
-        break
-
-    if choice in ('1', '2', '3', '4', '5', '6'):
-        num1 = float(input("Enter first number: "))
-        num2 = float(input("Enter second number: "))
-    elif choice in ('7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'):
-        num1 = float(input("Enter a number: "))
-    elif choice == '19':
-        start = int(input("Enter start of range: "))
-        end = int(input("Enter end of range: "))
-
-    if choice == '1':
-        print("Result:", add(num1, num2))
-    elif choice == '2':
-        print("Result:", subtract(num1, num2))
-    elif choice == '3':
-        print("Result:", multiply(num1, num2))
-    elif choice == '4':
-        print("Result:", divide(num1, num2))
-    elif choice == '5':
-        print("Result:", power(num1, num2))
-    elif choice == '6':
-        print("Result:", nth_root(num1, int(num2)))
-    elif choice == '7':
-        print("Result:", complex_sqrt(num1))
-    elif choice == '8':
-        print("Result:", exponential(num1))
-    elif choice == '9':
-        print("Result:", natural_log(num1))
-    elif choice == '10':
-        print("Result:", absolute_value(num1))
-    elif choice == '11':
-        print("Result:", floor(num1))
-    elif choice == '12':
-        print("Result:", ceiling(num1))
-    elif choice == '13':
-        print("Result:", sine(num1))
-    elif choice == '14':
-        print("Result:", cosine(num1))
-    elif choice == '15':
-        print("Result:", tangent(num1))
-    elif choice == '16':
-        print("Result:", arcsin(num1))
-    elif choice == '17':
-        print("Result:", arccos(num1))
-    elif choice == '18':
-        print("Result:", arctan(num1))
-    elif choice == '19':
-        print("Result:", random_number(start, end))
-    else:
+    if choice not in operations:
         print("Invalid input")
+        continue
+
+    operation_name, func, arg_count = operations[choice]
+
+    if arg_count == 0:
+        func()
+    elif arg_count == 1:
+        x = float(input("Enter a number: "))
+        print(f"Result: {func(x)}")
+    elif arg_count == 2:
+        x = float(input("Enter first number: "))
+        y = float(input("Enter second number: "))
+        print(f"Result: {func(x, y)}")
+    else:  # Variable number of arguments
+        args = []
+        while True:
+            value = input("Enter a number (or press Enter to finish): ")
+            if value == "":
+                break
+            args.append(float(value))
+        if len(args) < 2:
+            print("Error: At least two values are required")
+        else:
+            print(f"Result: {func(*args)}")
